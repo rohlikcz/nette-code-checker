@@ -365,6 +365,15 @@ $checker->tasks[] = function (CodeChecker $checker, $s) {
 	}
 };
 
+// cs, missing @testCase in phpt files
+$checker->tasks[] = function (CodeChecker $checker, $s) {
+	if ($checker->is('phpt')) {
+		if (!Strings::contains($s, ' * @testCase')) {
+			$checker->error('Missing @testCase');
+		}
+	}
+};
+
 $ok = $checker->run($options['-d']);
 
 exit($ok ? 0 : 1);
