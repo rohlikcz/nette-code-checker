@@ -6,6 +6,7 @@
  * This file is part of the Nette Framework (http://nette.org)
  */
 
+use CodeCheckers\EntityChecker;
 use Nette\CommandLine\Parser;
 use Nette\Utils\Strings;
 
@@ -375,21 +376,7 @@ $checker->tasks[] = function (CodeChecker $checker, $s) {
 };
 
 // cs, entity
-$checker->tasks[] = function (CodeChecker $checker, $s) {
-	if ($checker->is('php')) {
-		if (Strings::contains($s, '@ORM\Entity') && !Strings::contains($s, '@ORM\Entity(')) {
-			$checker->fix('Missing Entity`()`');
-			$s = str_replace('@ORM\Entity', '@ORM\Entity()', $s);
-		}
-
-		if (Strings::contains($s, '@ORM\Table()')) {
-			$checker->fix('Missing `name="table_name"`');
-			$s = str_replace('@ORM\Table()', '@ORM\Table(name="")', $s);
-		}
-
-		return $s;
-	}
-};
+$checker->tasks[] = EntityChecker::createAnnotationsChecker();
 
 $ok = $checker->run($options['-d']);
 

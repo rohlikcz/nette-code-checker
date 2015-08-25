@@ -17,5 +17,18 @@
 		"nette/neon": "~2.3",
 		"latte/latte": "~2.3"
 	},
+	"require-dev": {
+		"nette/tester": "1.4.0"
+	},
+	"autoload": {
+		"classmap": [
+			"src/"
+		]
+	},
+	"autoload-dev": {
+		"classmap": [
+			"tests/"
+		]
+	},
 	"bin": ["src/code-checker.php"]
 }
