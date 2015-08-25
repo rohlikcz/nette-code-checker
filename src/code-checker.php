@@ -10,7 +10,12 @@ use CodeCheckers\EntityChecker;
 use Nette\CommandLine\Parser;
 use Nette\Utils\Strings;
 
-if (@!include __DIR__ . '/../vendor/autoload.php') {
+$loaders = array_filter([
+	__DIR__ . '/../vendor/autoload.php',
+	__DIR__ . '/../../../autoload.php',
+], 'file_exists');
+
+if (@!include reset($loaders)) {
 	echo('Install packages using `composer update`');
 	exit(1);
 }
