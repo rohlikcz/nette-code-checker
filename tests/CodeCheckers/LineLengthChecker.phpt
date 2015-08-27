@@ -106,6 +106,22 @@ class LineLengthCheckerTest extends Tester\TestCase
 		];
 	}
 
+
+
+	public function testTabsToSpaces()
+	{
+		$annotationChecker = LineLengthChecker::createLineLengthChecker(10);
+		$annotationChecker($this->fakeChecker, "\t\t");
+		Assert::count(0, $this->fakeChecker->messages);
+
+		$annotationChecker($this->fakeChecker, "\t\t\t"); //3 tabs = 12 characters
+		Assert::count(1, $this->fakeChecker->messages);
+
+		foreach ($this->fakeChecker->messages as $message) {
+			Assert::match('%A%have%A%characters', $message);
+		}
+	}
+
 }
 
 

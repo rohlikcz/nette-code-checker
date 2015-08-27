@@ -19,6 +19,7 @@ class LineLengthChecker extends Object
 
 			$i = 1;
 			foreach (explode("\n", $s) as $line) {
+				$line = str_replace("\t", str_repeat(' ', 4), $line);
 				if (Strings::length($line) > $maxLineLength) {
 					$checker->warning(sprintf('Line %s have %d characters', Strings::truncate(Strings::trim($line), 30), Strings::length($line)), $i);
 				}
