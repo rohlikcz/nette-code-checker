@@ -385,7 +385,7 @@ $checker->tasks[] = function (CodeChecker $checker, $s) {
 $checker->tasks[] = EntityChecker::createAnnotationsChecker();
 
 //max line length
-$checker->tasks[] = LineLengthChecker::createLineLengthChecker(210);
+$checker->tasks[] = LineLengthChecker::createLineLengthChecker(160, 200);
 
 $ok = $checker->run($options['-d']);
 
