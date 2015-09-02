@@ -8,6 +8,7 @@
 
 use CodeCheckers\EntityChecker;
 use CodeCheckers\LineLengthChecker;
+use CodeCheckers\Html5Checker;
 use Nette\CommandLine\Parser;
 use Nette\Utils\Strings;
 
@@ -386,6 +387,9 @@ $checker->tasks[] = EntityChecker::createAnnotationsChecker();
 
 //max line length
 $checker->tasks[] = LineLengthChecker::createLineLengthChecker(160, 200);
+
+//html5 <br/>
+$checker->tasks[] = Html5Checker::createHtml5CheckerChecker();
 
 $ok = $checker->run($options['-d']);
 
