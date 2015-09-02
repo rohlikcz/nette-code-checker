@@ -7,6 +7,7 @@
  */
 
 use CodeCheckers\EntityChecker;
+use CodeCheckers\LineLengthChecker;
 use Nette\CommandLine\Parser;
 use Nette\Utils\Strings;
 
@@ -382,6 +383,9 @@ $checker->tasks[] = function (CodeChecker $checker, $s) {
 
 // cs, entity
 $checker->tasks[] = EntityChecker::createAnnotationsChecker();
+
+//max line length
+$checker->tasks[] = LineLengthChecker::createLineLengthChecker(160, 200);
 
 $ok = $checker->run($options['-d']);
 
