@@ -391,6 +391,9 @@ $checker->tasks[] = LineLengthChecker::createLineLengthChecker(160, 200);
 //html5 <br/>
 $checker->tasks[] = Html5Checker::createHtml5CheckerChecker();
 
+// " '
+$checker->tasks[] = \CodeCheckers\ApostropheChecker::createChecker();
+
 $ok = $checker->run($options['-d']);
 
 exit($ok ? 0 : 1);
