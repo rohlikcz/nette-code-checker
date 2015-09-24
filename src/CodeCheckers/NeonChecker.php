@@ -3,7 +3,6 @@
 namespace CodeCheckers;
 
 use Nette\Object;
-use Nette\Utils\Strings;
 
 
 
@@ -26,6 +25,7 @@ class NeonChecker extends Object
 					$line = preg_replace('~:( )?(no|off)$~i', ': false', $line);
 				}
 			}
+
 			return implode("\n", $lines);
 		};
 	}
