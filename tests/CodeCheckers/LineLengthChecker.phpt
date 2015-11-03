@@ -67,8 +67,8 @@ class LineLengthCheckerTest extends Tester\TestCase
 	 */
 	public function testTooLengthFiles($s, $countOfMessages)
 	{
-		$annotationChecker = LineLengthChecker::createLineLengthChecker(30);
-		$annotationChecker($this->fakeChecker, $s);
+		$checker = LineLengthChecker::createLineLengthChecker(30);
+		$checker($this->fakeChecker, $s);
 		Assert::count($countOfMessages, $this->fakeChecker->warning);
 		foreach ($this->fakeChecker->warning as $message) {
 			Assert::match('%A%have%A%characters', $message);
@@ -96,8 +96,8 @@ class LineLengthCheckerTest extends Tester\TestCase
 	 */
 	public function testPass($s)
 	{
-		$annotationChecker = LineLengthChecker::createLineLengthChecker(30);
-		$annotationChecker($this->fakeChecker, $s);
+		$checker = LineLengthChecker::createLineLengthChecker(30);
+		$checker($this->fakeChecker, $s);
 		Assert::count(0, $this->fakeChecker->warning);
 	}
 
@@ -118,11 +118,11 @@ class LineLengthCheckerTest extends Tester\TestCase
 
 	public function testTabsToSpaces()
 	{
-		$annotationChecker = LineLengthChecker::createLineLengthChecker(10);
-		$annotationChecker($this->fakeChecker, "\t\t");
+		$checker = LineLengthChecker::createLineLengthChecker(10);
+		$checker($this->fakeChecker, "\t\t");
 		Assert::count(0, $this->fakeChecker->warning);
 
-		$annotationChecker($this->fakeChecker, "\t\t\t"); //3 tabs = 12 characters
+		$checker($this->fakeChecker, "\t\t\t"); //3 tabs = 12 characters
 		Assert::count(1, $this->fakeChecker->warning);
 
 		foreach ($this->fakeChecker->warning as $message) {
@@ -133,18 +133,18 @@ class LineLengthCheckerTest extends Tester\TestCase
 
 	public function testErrorAndWarning()
 	{
-		$annotationChecker = LineLengthChecker::createLineLengthChecker(10, 20);
+		$checker = LineLengthChecker::createLineLengthChecker(10, 20);
 		$warningLine = str_repeat('a', 12);
 		$errorLine = str_repeat('a', 22);
 
 		Assert::count(0, $this->fakeChecker->warning);
 		Assert::count(0, $this->fakeChecker->error);
-		$annotationChecker($this->fakeChecker, $warningLine);
+		$checker($this->fakeChecker, $warningLine);
 
 		Assert::count(1, $this->fakeChecker->warning);
 		Assert::count(0, $this->fakeChecker->error);
 
-		$annotationChecker($this->fakeChecker, $errorLine);
+		$checker($this->fakeChecker, $errorLine);
 		Assert::count(1, $this->fakeChecker->warning);
 		Assert::count(1, $this->fakeChecker->error);
 	}
