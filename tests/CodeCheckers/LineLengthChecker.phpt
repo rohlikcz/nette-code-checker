@@ -68,6 +68,7 @@ class LineLengthCheckerTest extends Tester\TestCase
 	public function testTooLengthFiles($s, $countOfMessages)
 	{
 		$checker = LineLengthChecker::createLineLengthChecker(30);
+
 		$checker($this->fakeChecker, $s);
 		Assert::count($countOfMessages, $this->fakeChecker->warning);
 		foreach ($this->fakeChecker->warning as $message) {
@@ -97,6 +98,7 @@ class LineLengthCheckerTest extends Tester\TestCase
 	public function testPass($s)
 	{
 		$checker = LineLengthChecker::createLineLengthChecker(30);
+
 		$checker($this->fakeChecker, $s);
 		Assert::count(0, $this->fakeChecker->warning);
 	}
@@ -119,6 +121,7 @@ class LineLengthCheckerTest extends Tester\TestCase
 	public function testTabsToSpaces()
 	{
 		$checker = LineLengthChecker::createLineLengthChecker(10);
+
 		$checker($this->fakeChecker, "\t\t");
 		Assert::count(0, $this->fakeChecker->warning);
 
@@ -139,13 +142,33 @@ class LineLengthCheckerTest extends Tester\TestCase
 
 		Assert::count(0, $this->fakeChecker->warning);
 		Assert::count(0, $this->fakeChecker->error);
-		$checker($this->fakeChecker, $warningLine);
 
+		$checker($this->fakeChecker, $warningLine);
 		Assert::count(1, $this->fakeChecker->warning);
 		Assert::count(0, $this->fakeChecker->error);
 
 		$checker($this->fakeChecker, $errorLine);
 		Assert::count(1, $this->fakeChecker->warning);
+		Assert::count(1, $this->fakeChecker->error);
+	}
+
+
+
+	public function testDisableWarning()
+	{
+		$checker = LineLengthChecker::createLineLengthChecker(NULL, 20);
+		$warningLine = str_repeat('a', 12);
+		$errorLine = str_repeat('a', 22);
+
+		Assert::count(0, $this->fakeChecker->warning);
+		Assert::count(0, $this->fakeChecker->error);
+
+		$checker($this->fakeChecker, $warningLine);
+		Assert::count(0, $this->fakeChecker->warning); //zero, disabled warning
+		Assert::count(0, $this->fakeChecker->error);
+
+		$checker($this->fakeChecker, $errorLine);
+		Assert::count(0, $this->fakeChecker->warning);
 		Assert::count(1, $this->fakeChecker->error);
 	}
 

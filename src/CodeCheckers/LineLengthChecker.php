@@ -23,11 +23,12 @@ class LineLengthChecker extends Object
 				$line = str_replace("\t", str_repeat(' ', 4), $line);
 				$lineLength = Strings::length($line);
 				$message = sprintf('Line %s have %d characters', Strings::truncate(Strings::trim($line), 30), $lineLength);
+
 				if ($lineLength > $errorLineLength) {
 					$checker->error($message, $i);
 					continue;
 				}
-				if ($lineLength > $warningLineLength) {
+				if ($warningLineLength !== NULL && $lineLength > $warningLineLength) {
 					$checker->warning($message, $i);
 				}
 			}
