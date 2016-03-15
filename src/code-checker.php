@@ -37,7 +37,7 @@ set_error_handler(function ($severity, $message, $file, $line) {
 
 
 echo '
-CodeChecker version 2.5
+CodeChecker version 2.6
 -----------------------
 ';
 
@@ -46,7 +46,7 @@ Usage:
     php code-checker.php [options]
 
 Options:
-    -d <path>             Folder to scan (default: current directory)
+    -d <path>             Folder or file to scan (default: current directory)
     -i | --ignore <mask>  Files to ignore
     -f | --fix            Fixes files
     -l | --eol            Convert newline characters
@@ -78,14 +78,14 @@ class CodeChecker extends Nette\Object
 		'*.php', '*.phpt', '*.inc',
 		'*.txt', '*.texy', '*.md',
 		'*.css', '*.less', '*.sass', '*.scss', '*.js', '*.json', '*.latte', '*.htm', '*.html', '*.phtml', '*.xml',
-		'*.ini', '*.neon',
+		'*.ini', '*.neon', '*.yml',
 		'*.sh', '*.bat',
 		'*.sql',
 		'.htaccess', '.gitignore',
 	);
 
 	public $ignore = array(
-		'.*', '*.tmp', 'tmp', 'temp', 'log', 'vendor', 'node_modules', 'bower_components',
+		'.git', '.svn', '.idea', '*.tmp', 'tmp', 'temp', 'log', 'vendor', 'node_modules', 'bower_components',
 	);
 
 	private $file;
@@ -93,34 +93,38 @@ class CodeChecker extends Nette\Object
 	private $error;
 
 
-	public function run($folder)
+	public function run($path)
 	{
 		set_time_limit(0);
 
 		$this->useColors = PHP_SAPI === 'cli' && ((function_exists('posix_isatty') && posix_isatty(STDOUT))
-			|| getenv('ConEmuANSI') === 'ON' || getenv('ANSICON') !== FALSE);
+				|| getenv('ConEmuANSI') === 'ON' || getenv('ANSICON') !== FALSE || getenv('term') === 'xterm-256color');
 
 		if ($this->readOnly) {
 			echo "Running in read-only mode\n";
 		}
 
-		echo "Scanning folder {$this->color('white', $folder)}\n";
+		echo "Scanning {$this->color('white', $path)}\n";
 
 		$counter = 0;
 		$success = TRUE;
-		foreach (Nette\Utils\Finder::findFiles($this->accept)->exclude($this->ignore)->from($folder)->exclude($this->ignore) as $file)
+		$files = is_file($path)
+			? array($path)
+			: Nette\Utils\Finder::findFiles($this->accept)->exclude($this->ignore)->from($path)->exclude($this->ignore);
+
+		foreach ($files as $file)
 		{
 			echo str_pad(str_repeat('.', $counter++ % 40), 40), "\x0D";
 
 			$orig = $s = file_get_contents($file);
-			$this->file = ltrim(substr($file, strlen($folder)), '/\\');
+			$this->file = ltrim(substr($file, strlen($path)), '/\\');
 			$this->error = FALSE;
 
 			foreach ($this->tasks as $task) {
 				$res = $task($this, $s);
 				if ($this->error) {
 					$success = FALSE;
-					continue 2;
+					break;
 				} elseif (is_string($res)) {
 					$s = $res;
 				}
