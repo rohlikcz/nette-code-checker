@@ -7,9 +7,10 @@
  */
 
 use CodeCheckers\EntityChecker;
-use CodeCheckers\LineLengthChecker;
+use CodeCheckers\FunctionChecker;
 use CodeCheckers\Html5Checker;
 use CodeCheckers\NeonChecker;
+use CodeCheckers\LineLengthChecker;
 use Nette\CommandLine\Parser;
 use Nette\Utils\Strings;
 
@@ -396,8 +397,13 @@ $checker->tasks[] = LineLengthChecker::createLineLengthChecker(NULL, 360);
 //html5 <br/>
 $checker->tasks[] = Html5Checker::createHtml5CheckerChecker();
 
+
 //boolean (yes, on -> true, no, off -> false)
 $checker->tasks[] = NeonChecker::createBooleanValuesChecker();
+
+//public|protected|private
+$checker->tasks[] = FunctionChecker::createChecker();
+
 
 $ok = $checker->run($options['-d']);
 
